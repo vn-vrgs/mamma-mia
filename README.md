@@ -10,7 +10,7 @@ Aplicación web interactiva desarrollada con **React 18** y **Vite**, que simula
   - https://github.com/vn-vrgs/mamma-mia.git
   
 - Desploy:
-  - https://github.com/vn-vrgs/mamma-mia.git](https://mamma-mia-gamma.vercel.app/
+  - https://mamma-mia-gamma.vercel.app/
 
 
 ---
