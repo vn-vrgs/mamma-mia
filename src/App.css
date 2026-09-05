@@ -1,0 +1,106 @@
+/* src/App.css - Component Specific Styles */
+
+/* Header Component */
+.header-bg {
+  background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
+    url('https://firebasestorage.googleapis.com/v0/b/apis-varias-mias.appspot.com/o/pizzeria%2FHeader.jpg?alt=media&token=a4058d84-c8c3-4d64-9279-b1d68364c760')
+      center/cover no-repeat;
+  color: #ffffff;
+  padding: 4.5rem 1rem;
+  text-align: center;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+}
+
+.header-title {
+  font-weight: 700;
+  font-size: 2.75rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+}
+
+.header-subtitle {
+  font-size: 1.15rem;
+  font-weight: 300;
+  color: #e0e0e0;
+  margin-bottom: 0;
+}
+
+/* CardPizza Component */
+.card-pizza {
+  border: 1px solid #000000;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  background-color: #ffffff;
+}
+
+.card-pizza:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card-pizza-img {
+  height: 210px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.pizza-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.ingredients-label {
+  font-size: 0.85rem;
+  color: #718096;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ingredients-list {
+  font-size: 0.95rem;
+  color: #4a5568;
+  font-weight: 300;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.price-text {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+/* Navbar Customization */
+.navbar-brand {
+  font-weight: 500;
+  font-size: 1.15rem;
+}
+
+.btn-total {
+  border-color: #0dcaf0;
+  color: #0dcaf0;
+  font-weight: 500;
+}
+
+.btn-total:hover {
+  background-color: #0dcaf0;
+  color: #000;
+}
+
+/* Responsive Container Adjustments */
+@media (max-width: 576px) {
+  .header-title {
+    font-size: 2rem;
+  }
+  .header-subtitle {
+    font-size: 1rem;
+  }
+  .header-bg {
+    padding: 3rem 1rem;
+  }
+}
