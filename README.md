@@ -1,27 +1,25 @@
-# 🍕 Hito 1 - Pizzería Mamma Mia!
+# 🍕 Hito 2 - Pizzería Mamma Mia!
 
-Aplicación web interactiva desarrollada con **React 18** y **Vite**, que simula el catálogo principal y menú de navegación para la **Pizzería Mamma Mia!**. Este proyecto fue diseñado siguiendo estándares profesionales de Desarrollo Web Responsivo, arquitectura basada en componentes interconectados mediante *props* y maquetación con **Bootstrap 5 / React-Bootstrap**.
+Aplicación web interactiva desarrollada con **React 18**, **Vite** y **Bootstrap 5 / React-Bootstrap**, correspondiente al módulo de **Estados de los componentes y eventos**.
+
+En este hito se integran los **formularios de Registro y Login**, gestionando el estado de la interfaz mediante el hook `useState()`, capturando eventos de formulario (`onSubmit`, `onChange`), previniendo comportamientos por defecto (`e.preventDefault()`) y aplicando **validaciones de negocio con retroalimentación mediante ventanas emergentes (Modales) profesionales con fondo degradado y desenfoque**.
 
 ---
 
+## 🔗 Enlaces
 
-# Enlaces
-- Repositorio:
-  - https://github.com/vn-vrgs/mamma-mia.git
-  
-- Desploy:
-  - https://mamma-mia-gamma.vercel.app/
-
+- **Repositorio**: [https://github.com/vn-vrgs/mamma-mia.git](https://github.com/vn-vrgs/mamma-mia.git)
+- **Despliegue**: [https://mamma-mia-gamma.vercel.app/](https://mamma-mia-gamma.vercel.app/)
 
 ---
 
 ## 🛠️ Tecnologías Utilizadas
 
-- **HTML5 & CSS3**: Semántica, maquetación adaptativa (*Mobile-First*) y variables CSS.
-- **JavaScript (ES6+)**: Interpolación de expresiones, desestructuración de objetos, métodos de arreglos y operadores ternarios.
-- **React 18**: Biblioteca UI basada en arquitectura de componentes funcionales y JSX.
-- **Vite.js**: Entorno de desarrollo ultra rápido y empaquetador moderno.
-- **Bootstrap 5 & React-Bootstrap**: Sistema de grillas responsivas y componentes de UI (Navbars, Cards, Buttons, Containers).
+- **HTML5 & CSS3**: Semántica moderna, maquetación adaptativa (*Mobile-First*), degradados CSS (`linear-gradient`) y desenfoque de fondo (`backdrop-filter: blur`).
+- **JavaScript (ES6+)**: Desestructuración, validación de cadenas (`trim()`), funciones flecha y operadores ternarios.
+- **React 18**: Biblioteca de UI basada en componentes funcionales, JSX y Hooks (`useState`).
+- **Vite.js**: Entorno de desarrollo ultrarrápido y empaquetador de producción.
+- **Bootstrap 5 & React-Bootstrap**: Grilla responsiva y componentes UI (`Container`, `Card`, `Form`, `Button`, `Modal`, `Navbar`).
 
 ---
 
@@ -38,8 +36,6 @@ mamma-mia/
 │       ├── espaniola.jpg
 │       └── pepperoni.jpg
 ├── public/
-│   └── assets/
-│       └── img/
 ├── src/
 │   ├── assets/
 │   │   └── img/
@@ -47,68 +43,63 @@ mamma-mia/
 │   │       ├── espaniola.jpg
 │   │       └── pepperoni.jpg
 │   ├── components/
-│   │   ├── Navbar.jsx      # Barra de navegación con estado de auth (token) y total formateado
-│   │   ├── Header.jsx      # Hero Banner con imagen de fondo y título de bienvenida
-│   │   ├── Home.jsx        # Componente vista que agrupa Header y la galería de CardPizza
-│   │   ├── CardPizza.jsx   # Componente reutilizable de la tarjeta de pizza (recibe props)
-│   │   └── Footer.jsx      # Pie de página institucional
+│   │   ├── Navbar.jsx            # Barra de navegación con estado de auth (token), total y callbacks de navegación
+│   │   ├── Header.jsx            # Hero Banner con imagen de fondo y título de bienvenida
+│   │   ├── Home.jsx              # Vista principal con catálogo de CardPizza
+│   │   ├── CardPizza.jsx         # Tarjeta de producto reutilizable
+│   │   ├── RegisterPage.jsx      # Vista de Formulario de Registro con validaciones y modal emergente
+│   │   ├── LoginPage.jsx         # Vista de Formulario de Login con validaciones y modal emergente
+│   │   ├── NotificationModal.jsx # Ventana emergente (Modal) profesional para errores/éxito con botón de acción
+│   │   └── Footer.jsx            # Pie de página institucional
 │   ├── utils/
-│   │   └── format.js       # Helper para formateo de números y moneda local (es-CL)
-│   ├── App.jsx             # Componente raíz que ensambla Navbar, Home y Footer
-│   ├── App.css             # Estilos específicos de componentes (Header, Cards, Navbar)
-│   ├── index.css           # Estilos globales e importación de Bootstrap CSS
-│   └── main.jsx            # Punto de entrada de React en el DOM
+│   │   └── format.js             # Helper de formateo numérico y moneda chilena (es-CL)
+│   ├── App.jsx                   # Componente principal con ensamblado de vistas y navegación interactiva
+│   ├── App.css                   # Estilos personalizados (Modales, backdrop degradado con blur, Cards)
+│   ├── index.css                 # Estilos globales de la aplicación
+│   └── main.jsx                  # Punto de entrada de React en el DOM
 └── README.md
 ```
 
 ---
 
-## 📋 Cumplimiento de Requerimientos de la Guía
+## 📋 Cumplimiento de Requerimientos del Hito 2
 
-### 1. Componente Principal (`App.jsx`)
-- Integra los componentes clave de la aplicación: `<Navbar />`, `<Home />` y `<Footer />`.
-- Estructura flexbox para mantener el footer fijado al final del viewport (`min-vh-100`).
+### 1. Formulario de Registro (`RegisterPage.jsx`)
+Crea un componente enfocado en el registro de usuarios que incluye:
+- **Campos del formulario**:
+  - `Email` (`type="email"`)
+  - `Contraseña` (`type="password"`)
+  - `Confirmar contraseña` (`type="password"`)
+- **Gestión de Estado**: Mantiene variables locales (`email`, `password`, `confirmPassword`, `modalConfig`) mediante `useState()`.
+- **Validaciones mínimas de negocio**:
+  1. **Campos obligatorios**: Verifica que ningún campo se envíe vacío o compuesto únicamente por espacios en blanco (`!email.trim() || !password.trim() || !confirmPassword.trim()`).
+  2. **Longitud de contraseña**: Valida que la contraseña tenga **al menos 6 caracteres** (`password.length >= 6`).
+  3. **Coincidencia de contraseñas**: Confirma que la contraseña y la confirmación coincidan exactamente (`password === confirmPassword`).
+- **Retroalimentación por Ventana Emergente**: Dispara la ventana emergente `NotificationModal` al detectar un error o al registrar con éxito.
 
-### 2. Componente Banner (`Header.jsx`)
-- Llamado dentro de `Home.jsx`.
-- Incluye el título `¡Pizzería Mamma Mia!` y la descripción `¡Tenemos las mejores pizzas que podrás encontrar!`.
-- Presenta un fondo con imagen de pizza y una capa superpuesta (*overlay*) oscura para garantizar máxima legibilidad y contraste.
+### 2. Formulario de Login (`LoginPage.jsx`)
+Crea un componente para el inicio de sesión de usuarios registrado:
+- **Campos del formulario**:
+  - `Email` (`type="email"`)
+  - `Contraseña` (`type="password"`)
+- **Gestión de Estado**: Control de entradas mediante `useState()`.
+- **Validaciones mínimas de negocio**:
+  1. **Campos obligatorios**: Comprueba que los campos no estén vacíos (`!email.trim() || !password.trim()`).
+  2. **Longitud de contraseña**: Exige un mínimo de **6 caracteres** (`password.length >= 6`).
+- **Retroalimentación por Ventana Emergente**: Muestra un popup emergente `NotificationModal` con el resultado de la autenticación `"Authentication successful!"` o error.
 
-### 3. Componente de Navegación (`Navbar.jsx`)
-- Define internamente las variables especificadas:
-  ```javascript
-  const total = 25000;
-  const token = false;
-  ```
-- Aplica el **operador ternario** (`token ? (...) : (...)`) para evaluar el estado simulado de sesión:
-  - **Si `token === true`**: Muestra los botones `🔓 Profile` y `🔒 Logout`.
-  - **Si `token === false`**: Muestra los botones `🔐 Login` y `🔐 Register`.
-- Formatea la variable `total` utilizando la función helper `formatCurrency` basada en `toLocaleString('es-CL')`, mostrando `$25.000`.
+### 3. Componente de Ventana Emergente (`NotificationModal.jsx`) & Fondo Degradado
+- Ventana emergente modal flotante con cabecera de color según la severidad (`bg-danger` o `bg-success`), título descriptivo, mensaje claro e icono.
+- Incluye botón exclusivo **"Aceptar"** para cerrar la ventana emergente.
+- Estilizado de **fondo de ventana degradado y desenfocado** (`backdrop-filter: blur(8px); background: linear-gradient(...)`) que oscurece suavemente el resto de la aplicación mientras el popup está activo.
 
-### 4. Botones Permanentes (`Home` y `Total`)
-- Los botones `🍕 Home` y `🛒 Total: $25.000` se muestran siempre de forma independiente del valor booleano de `token`.
-
-### 5. Componente Tarjeta de Pizza (`CardPizza.jsx` y `Home.jsx`)
-- `Home.jsx` invoca 3 instancias del componente `CardPizza.jsx` pasando de manera dinámica las siguientes propiedades (*props*) e **imágenes locales del proyecto** (`./assets/img/`):
-  1. **Pizza Napolitana**: `$5.950` - Imagen: `napolitana.jpg` - Ingredientes: *mozzarella, tomates, jamón, orégano*.
-  2. **Pizza Española**: `$6.950` - Imagen: `espaniola.jpg` - Ingredientes: *mozzarella, gorgonzola, parmesano, provolone*.
-  3. **Pizza Pepperoni**: `$6.950` - Imagen: `pepperoni.jpg` - Ingredientes: *mozzarella, pepperoni, orégano*.
-- `CardPizza.jsx` desestructura las props (`name`, `price`, `ingredients`, `img`) y muestra:
-  - Imagen de la pizza con tamaño uniforme.
-  - Nombre formateado ("Pizza Napolitana", etc.).
-  - Lista de ingredientes precedida por el icono 🍕.
-  - Precio formateado en pesos chilenos (ej: `Precio: $5.950`).
-  - Botones de acción `Ver Más 👀` y `Añadir 🛒`.
-
-### 6. Pie de Página (`Footer.jsx`)
-- Contiene la leyenda: `© 2021 - Pizzería Mamma Mia! - Todos los derechos reservados`.
-- Es invocado correctamente dentro de `App.jsx`.
+### 4. Integración y Navegación (`App.jsx` & `Navbar.jsx`)
+- `App.jsx` integra las tres vistas principales: `<Home />`, `<RegisterPage />` y `<LoginPage />`.
+- Permite probar individualmente las vistas comentando/descomentando los componentes en el JSX según la pauta del hito, o navegar interactivamente haciendo clic en los botones del `<Navbar />` (`Home`, `Login`, `Register`).
 
 ---
 
 ## 🚀 Instalación y Ejecución Local
-
-Para ejecutar este proyecto en tu entorno local:
 
 1. **Clonar o acceder al directorio del proyecto:**
    ```bash
@@ -120,11 +111,11 @@ Para ejecutar este proyecto en tu entorno local:
    npm install
    ```
 
-3. **Iniciar el servidor de desarrollo:**
+3. **Iniciar servidor de desarrollo:**
    ```bash
    npm run dev
    ```
-   Abre tu navegador e ingresa a la URL entregada por la consola (habitualmente `http://localhost:5173`).
+   Abre la URL indicada en la terminal (por ejemplo, `http://localhost:5173`).
 
 4. **Compilar para producción:**
    ```bash
@@ -134,4 +125,4 @@ Para ejecutar este proyecto en tu entorno local:
 ---
 
 ## 📱 Diseño Responsivo
-La interfaz ha sido probada en dispositivos móviles (smartphones), tablets y pantallas de escritorio. La grilla utiliza puntos de quiebre de Bootstrap (`Row xs={1} md={2} lg={3}`) para colapsar las tarjetas de pizza a 1 columna en móviles, 2 en tablets y 3 en pantallas anchas.
+Los formularios de **Registro** y **Login** utilizan tarjetas adaptativas (`Card`) centradas mediante contenedores Flexbox de Bootstrap, garantizando una excelente visualización y usabilidad en smartphones, tablets y monitores de escritorio.

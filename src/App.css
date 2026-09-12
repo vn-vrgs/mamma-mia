@@ -104,3 +104,41 @@
     padding: 3rem 1rem;
   }
 }
+
+/* Ventana Emergente (Modal) & Fondo Degradado con Desenfoque (Blur) */
+.modal-backdrop.show {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.9), rgba(0, 0, 0, 0.95)) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  opacity: 1 !important;
+}
+
+.notification-modal .modal-content {
+  border: none !important;
+  border-radius: 1.25rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4) !important;
+  overflow: hidden;
+  background-color: #ffffff;
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+.notification-modal .modal-header {
+  border-bottom: none;
+  padding: 1.25rem 1.5rem;
+}
+
+.notification-modal .modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+

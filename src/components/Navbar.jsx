@@ -5,15 +5,22 @@ import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import { formatCurrency } from '../utils/format';
 
-const Navbar = () => {
-  // Requerimiento 3: Definición de variables al interior del componente
+const Navbar = ({ onNavigate, currentPage }) => {
+  // Requerimiento Hito 1 & 2: Definición de variables al interior del componente
   const total = 25000;
   const token = false;
 
   return (
     <NavbarBootstrap bg="dark" variant="dark" expand="lg" className="py-2 shadow-sm sticky-top">
       <Container fluid className="px-3 px-md-4">
-        <NavbarBootstrap.Brand href="#home" className="text-white me-3">
+        <NavbarBootstrap.Brand 
+          href="#home" 
+          className="text-white me-3"
+          onClick={(e) => {
+            e.preventDefault();
+            if (onNavigate) onNavigate('home');
+          }}
+        >
           Pizzería Mamma Mia!
         </NavbarBootstrap.Brand>
         <NavbarBootstrap.Toggle aria-controls="basic-navbar-nav" />
@@ -21,7 +28,12 @@ const Navbar = () => {
           {/* Navegación izquierda: Home y botones según estado de autenticación (token) */}
           <Nav className="me-auto gap-2 my-2 my-lg-0 align-items-lg-center">
             {/* Requerimiento 4: Botón Home (Siempre visible) */}
-            <Button variant="outline-light" size="sm" className="px-3">
+            <Button 
+              variant={currentPage === 'home' ? 'light' : 'outline-light'} 
+              size="sm" 
+              className="px-3"
+              onClick={() => onNavigate && onNavigate('home')}
+            >
               🍕 Home
             </Button>
 
@@ -37,10 +49,20 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Button variant="outline-light" size="sm" className="px-3">
+                <Button 
+                  variant={currentPage === 'login' ? 'light' : 'outline-light'} 
+                  size="sm" 
+                  className="px-3"
+                  onClick={() => onNavigate && onNavigate('login')}
+                >
                   🔐 Login
                 </Button>
-                <Button variant="outline-light" size="sm" className="px-3">
+                <Button 
+                  variant={currentPage === 'register' ? 'light' : 'outline-light'} 
+                  size="sm" 
+                  className="px-3"
+                  onClick={() => onNavigate && onNavigate('register')}
+                >
                   🔐 Register
                 </Button>
               </>
