@@ -1,18 +1,24 @@
-/* src/index.css - Global Styles */
+/* src/index.css - Global Dark Theme Styles */
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
 :root {
-  --primary-color: #212529;
-  --accent-color: #0dcaf0;
-  --font-family: 'Roboto', sans-serif;
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --accent-gold: #f59e0b;
+  --accent-cyan: #06b6d4;
+  --accent-emerald: #10b981;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: var(--font-family);
-  background-color: #000000;
-  color: #212529;
+  background-color: var(--bg-main);
+  color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -21,14 +27,26 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--bg-main);
 }
 
-/* Custom Utilities & Cleanups */
+/* Custom Utility Classes */
+.bg-slate-900 {
+  background-color: #0f172a !important;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
 
+.backdrop-blur {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(15, 23, 42, 0.75);
+}
+
 hr {
-  opacity: 0.15;
+  opacity: 0.25;
   margin: 0.75rem 0;
+  border-color: var(--border-color);
 }

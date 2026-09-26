@@ -5,62 +5,61 @@ import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import { formatCurrency } from '../utils/format';
 
-const Navbar = ({ onNavigate, currentPage }) => {
+const Navbar = ({ onNavigate, currentPage, total = 25000 }) => {
   // Requerimiento Hito 1 & 2: Definición de variables al interior del componente
-  const total = 25000;
   const token = false;
 
   return (
-    <NavbarBootstrap bg="dark" variant="dark" expand="lg" className="py-2 shadow-sm sticky-top">
-      <Container fluid className="px-3 px-md-4">
+    <NavbarBootstrap bg="dark" variant="dark" expand="lg" className="py-2 border-bottom border-secondary shadow-lg sticky-top">
+      <Container fluid className="px-3 px-md-5">
         <NavbarBootstrap.Brand 
           href="#home" 
-          className="text-white me-3"
+          className="text-warning fw-bold fs-4 me-4 d-flex align-items-center gap-2"
           onClick={(e) => {
             e.preventDefault();
             if (onNavigate) onNavigate('home');
           }}
         >
-          Pizzería Mamma Mia!
+          <span>🍕</span> Pizzería Mamma Mia!
         </NavbarBootstrap.Brand>
-        <NavbarBootstrap.Toggle aria-controls="basic-navbar-nav" />
+
+        <NavbarBootstrap.Toggle aria-controls="basic-navbar-nav" className="border-secondary" />
+
         <NavbarBootstrap.Collapse id="basic-navbar-nav">
           {/* Navegación izquierda: Home y botones según estado de autenticación (token) */}
           <Nav className="me-auto gap-2 my-2 my-lg-0 align-items-lg-center">
-            {/* Requerimiento 4: Botón Home (Siempre visible) */}
             <Button 
-              variant={currentPage === 'home' ? 'light' : 'outline-light'} 
+              variant={currentPage === 'home' ? 'warning' : 'outline-light'} 
               size="sm" 
-              className="px-3"
+              className={`px-3 rounded-3 fw-medium ${currentPage === 'home' ? 'text-dark fw-bold' : ''}`}
               onClick={() => onNavigate && onNavigate('home')}
             >
               🍕 Home
             </Button>
 
-            {/* Requerimiento 3: Renderizado condicional mediante operador ternario según variable 'token' */}
             {token ? (
               <>
-                <Button variant="outline-light" size="sm" className="px-3">
+                <Button variant="outline-light" size="sm" className="px-3 rounded-3">
                   🔓 Profile
                 </Button>
-                <Button variant="outline-light" size="sm" className="px-3">
+                <Button variant="outline-light" size="sm" className="px-3 rounded-3">
                   🔒 Logout
                 </Button>
               </>
             ) : (
               <>
                 <Button 
-                  variant={currentPage === 'login' ? 'light' : 'outline-light'} 
+                  variant={currentPage === 'login' ? 'warning' : 'outline-light'} 
                   size="sm" 
-                  className="px-3"
+                  className={`px-3 rounded-3 fw-medium ${currentPage === 'login' ? 'text-dark fw-bold' : ''}`}
                   onClick={() => onNavigate && onNavigate('login')}
                 >
                   🔐 Login
                 </Button>
                 <Button 
-                  variant={currentPage === 'register' ? 'light' : 'outline-light'} 
+                  variant={currentPage === 'register' ? 'warning' : 'outline-light'} 
                   size="sm" 
-                  className="px-3"
+                  className={`px-3 rounded-3 fw-medium ${currentPage === 'register' ? 'text-dark fw-bold' : ''}`}
                   onClick={() => onNavigate && onNavigate('register')}
                 >
                   🔐 Register
@@ -69,9 +68,14 @@ const Navbar = ({ onNavigate, currentPage }) => {
             )}
           </Nav>
 
-          {/* Requerimiento 4: Botón Total (Siempre visible, formateado con formato de miles) */}
+          {/* Botón Total del Carrito */}
           <Nav className="ms-auto align-items-center mt-2 mt-lg-0">
-            <Button variant="outline-info" size="sm" className="btn-total px-3 py-1">
+            <Button 
+              variant={currentPage === 'cart' ? 'info' : 'outline-info'} 
+              size="sm" 
+              className={`btn-total px-3 py-1.5 rounded-3 fw-bold ${currentPage === 'cart' ? 'bg-info text-dark' : ''}`}
+              onClick={() => onNavigate && onNavigate('cart')}
+            >
               🛒 Total: {formatCurrency(total)}
             </Button>
           </Nav>
