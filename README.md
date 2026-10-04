@@ -1,4 +1,6 @@
-# 🍕 Hito 4 - Pizzería Mamma Mía (Consumo de APIs con React)
+# 🍕 Hito 4 - Pizzería Mamma Mía 
+### (Consumo de APIs con React)
+
 
 Este proyecto corresponde al **Hito 4** del módulo de React, en el cual se valida e implementa el **Consumo de APIs externas** mediante el uso de Hooks (`useEffect`, `useState`) y la API `fetch` en la aplicación web de **Pizzería Mamma Mía**.
 
@@ -7,10 +9,27 @@ Este proyecto corresponde al **Hito 4** del módulo de React, en el cual se vali
 
 ## 🔗 Enlaces Oficiales
 
-- **Repositorio en GitHub**: [https://github.com/vn-vrgs/mamma-mia.git](https://github.com/vn-vrgs/mamma-mia.git)
-- **Despliegue en Vivo (Vercel)**: [https://mamma-mia-gamma.vercel.app/](https://mamma-mia-gamma.vercel.app/)
+- **Repositorio en GitHub**:
+  -  [https://github.com/vn-vrgs/mamma-mia.git](https://github.com/vn-vrgs/mamma-mia.git)
+- **Despliegue en Vivo (Vercel)**: 
+  - [https://mamma-mia-gamma.vercel.app/](https://mamma-mia-gamma.vercel.app/)
 
 ---
+
+## Evidencias comprobadas en mi equipo local
+
+### Retorna el arreglo de 6 pizza
+![Retorna el arreglo de 6 pizzas](assets/img/CapturaPantalla-http-localhos-5000-api-pizzas.png)
+
+### Retorna el objeto detallado de la pizza Napolitan
+![Retorna el objeto detallado de la pizza Napolitana](assets/img/CapturaPantalla-http-localhost-5000-api-pizzas-p001.png)
+
+
+---
+
+
+
+
 
 
 ## 📋 Requerimientos Implementados
