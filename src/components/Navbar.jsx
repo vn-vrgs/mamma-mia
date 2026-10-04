@@ -37,6 +37,15 @@ const Navbar = ({ onNavigate, currentPage, total = 25000 }) => {
               🍕 Home
             </Button>
 
+            <Button 
+              variant={currentPage === 'pizza' ? 'warning' : 'outline-light'} 
+              size="sm" 
+              className={`px-3 rounded-3 fw-medium ${currentPage === 'pizza' ? 'text-dark fw-bold' : ''}`}
+              onClick={() => onNavigate && onNavigate('pizza')}
+            >
+              🍕 Pizza Detail
+            </Button>
+
             {token ? (
               <>
                 <Button variant="outline-light" size="sm" className="px-3 rounded-3">
