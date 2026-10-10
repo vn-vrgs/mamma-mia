@@ -1,9 +1,10 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import { Link } from 'react-router-dom';
 import { formatCurrency } from '../utils/format';
 
-const CardPizza = ({ name, price, ingredients = [], img, desc, onAddToCart }) => {
+const CardPizza = ({ id = 'p001', name, price, ingredients = [], img, desc, onAddToCart }) => {
   return (
     <Card className="card-pizza h-100 shadow-lg border-secondary bg-dark text-white rounded-4 overflow-hidden">
       {/* Imagen superior de la pizza */}
@@ -26,7 +27,7 @@ const CardPizza = ({ name, price, ingredients = [], img, desc, onAddToCart }) =>
 
         <hr className="border-secondary opacity-50 my-2" />
 
-        {/* Requerimiento Hito 3: Itera por la lista de ingredientes de cada pizza y renderiza un <li> por cada ingrediente */}
+        {/* Ingredientes de cada pizza */}
         <div className="my-3 text-start">
           <p className="ingredients-label mb-2 text-uppercase tracking-wider small text-secondary">
             🍕 Ingredientes:
@@ -54,7 +55,13 @@ const CardPizza = ({ name, price, ingredients = [], img, desc, onAddToCart }) =>
 
         {/* Botones de Acción */}
         <div className="d-flex justify-content-between align-items-center pt-2 mt-auto gap-2">
-          <Button variant="outline-light" size="sm" className="px-3 border-secondary rounded-3 flex-fill">
+          <Button 
+            as={Link} 
+            to="/pizza/p001" 
+            variant="outline-light" 
+            size="sm" 
+            className="px-3 border-secondary rounded-3 flex-fill text-decoration-none text-center"
+          >
             Ver Más 👀
           </Button>
           <Button 

@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+
 import Navbar from './components/Navbar';
-import Home from './components/Home';
-import Pizza from './components/Pizza';
-import Cart from './components/Cart';
 import Footer from './components/Footer';
 
-import RegisterPage from './components/RegisterPage';
-import LoginPage from './components/LoginPage';
+import Home from './pages/Home';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Cart from './pages/Cart';
+import Pizza from './pages/Pizza';
+import Profile from './pages/Profile';
+import NotFound from './pages/NotFound';
 
 import './App.css';
 
 function App() {
-  // Estado para la navegación interactiva entre vistas ('home', 'pizza', 'cart', 'register', 'login')
-  const [currentPage, setCurrentPage] = useState('home');
-  const [selectedPizzaId, setSelectedPizzaId] = useState('p001');
   const [cart, setCart] = useState([]);
+  const [token, setToken] = useState(false);
 
-  // Función para agregar pizzas al carrito desde Home o Pizza
+  // Función para agregar pizzas al carrito
   const addToCart = (pizza) => {
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.id === pizza.id);
@@ -48,41 +50,58 @@ function App() {
     );
   };
 
-  // Función para ver el detalle de una pizza específica
-  const handleViewMore = (id) => {
-    setSelectedPizzaId(id);
-    setCurrentPage('pizza');
-  };
-
   // Total calculado dinámicamente según el estado global del carrito
   const cartTotal = cart.reduce((acc, item) => acc + item.price * item.count, 0);
 
   return (
     <div className="d-flex flex-column min-vh-100 bg-slate-900 text-white dark-theme">
-      <Navbar onNavigate={setCurrentPage} currentPage={currentPage} total={cartTotal} />
+      <Navbar total={cartTotal} token={token} />
 
-      {/* Requerimientos Hito 4:
-          1. Home.jsx: Muestra la lista de pizzas consumidas desde GET http://localhost:5000/api/pizzas
-          2. Pizza.jsx: Muestra los detalles de una pizza consumidos desde GET http://localhost:5000/api/pizzas/p001
-      */}
-      {currentPage === 'home' && (
-        <Home onAddToCart={addToCart} onViewMore={handleViewMore} />
-      )}
-      
-      {currentPage === 'pizza' && (
-        <Pizza pizzaId={selectedPizzaId} onAddToCart={addToCart} />
-      )}
+      <Routes>
+        {/* Ruta Home */}
+        <Route path="/" element={<Home onAddToCart={addToCart} />} />
 
-      {currentPage === 'cart' && (
-        <Cart 
-          cart={cart} 
-          onIncrease={increaseQuantity} 
-          onDecrease={decreaseQuantity} 
+        {/* Ruta Register */}
+        <Route path="/register" element={<Register />} />
+
+        {/* Ruta Login */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Ruta Cart */}
+        <Route 
+          path="/cart" 
+          element={
+            <Cart 
+              cart={cart} 
+              onIncrease={increaseQuantity} 
+              onDecrease={decreaseQuantity} 
+            />
+          } 
         />
-      )}
 
-      {currentPage === 'register' && <RegisterPage />}
-      {currentPage === 'login' && <LoginPage />}
+        {/* Ruta Pizza Detail */}
+        <Route 
+          path="/pizza/p001" 
+          element={<Pizza pizzaId="p001" onAddToCart={addToCart} />} 
+        />
+
+        {/* Ruta Profile */}
+        <Route 
+          path="/profile" 
+          element={
+            <Profile 
+              email="usuario@mammamia.com" 
+              onLogout={() => setToken(false)} 
+            />
+          } 
+        />
+
+        {/* Ruta 404 explícita */}
+        <Route path="/404" element={<NotFound />} />
+
+        {/* Ruta por defecto (catch-all) */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
 
       <Footer />
     </div>

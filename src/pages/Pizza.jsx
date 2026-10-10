@@ -6,13 +6,13 @@ import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
 import Badge from 'react-bootstrap/Badge';
 import { formatCurrency } from '../utils/format';
+import { pizzas as mockPizzas } from '../pizzas';
 
 const Pizza = ({ pizzaId = 'p001', onAddToCart }) => {
   const [pizza, setPizza] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Requerimiento Hito 4: Consumir la API de pizzas (GET http://localhost:5000/api/pizzas/p001) mediante useEffect
   const getPizza = async () => {
     try {
       setLoading(true);
@@ -24,8 +24,14 @@ const Pizza = ({ pizzaId = 'p001', onAddToCart }) => {
       const data = await response.json();
       setPizza(data);
     } catch (err) {
-      console.error('Error al consumir la API de detalle de pizza:', err);
-      setError(err.message || 'No se pudo conectar con el servidor backend');
+      console.warn('Backend no disponible, usando pizza de respaldo local:', err.message);
+      // Fallback a pizza mock local
+      const found = mockPizzas.find((p) => p.id === pizzaId) || mockPizzas[0];
+      if (found) {
+        setPizza(found);
+      } else {
+        setError('No se pudo cargar la información de la pizza.');
+      }
     } finally {
       setLoading(false);
     }
@@ -42,7 +48,7 @@ const Pizza = ({ pizzaId = 'p001', onAddToCart }) => {
           <Spinner animation="border" variant="warning" style={{ width: '3rem', height: '3rem' }}>
             <span className="visually-hidden">Cargando información de la pizza...</span>
           </Spinner>
-          <p className="text-light fs-5 mt-3">Cargando detalles desde la API...</p>
+          <p className="text-light fs-5 mt-3">Cargando detalles de la pizza...</p>
         </div>
       )}
 
@@ -50,8 +56,6 @@ const Pizza = ({ pizzaId = 'p001', onAddToCart }) => {
         <Alert variant="danger" className="text-center shadow-lg border-danger w-100" style={{ maxWidth: '600px' }}>
           <Alert.Heading className="fw-bold">❌ Error al cargar la pizza</Alert.Heading>
           <p>{error}</p>
-          <hr />
-          <p className="mb-0 small">Asegúrate de tener el backend ejecutándose en <code>http://localhost:5000</code>.</p>
         </Alert>
       )}
 
@@ -68,21 +72,18 @@ const Pizza = ({ pizzaId = 'p001', onAddToCart }) => {
             </div>
             <div className="col-md-6">
               <Card.Body className="p-4 d-flex flex-column h-100">
-                {/* Requerimiento: Nombre de la pizza */}
                 <Card.Title className="text-warning fw-bold fs-2 text-capitalize mb-2">
                   Pizza {pizza.name}
                 </Card.Title>
 
                 <hr className="border-secondary opacity-50 my-2" />
 
-                {/* Requerimiento: Descripción de la pizza */}
                 <Card.Text className="text-light opacity-90 my-3 leading-relaxed">
                   {pizza.desc}
                 </Card.Text>
 
                 <hr className="border-secondary opacity-50 my-2" />
 
-                {/* Requerimiento: Ingredientes de la pizza */}
                 <div className="my-2">
                   <p className="mb-2 text-uppercase tracking-wider small text-secondary fw-semibold">
                     🍕 Ingredientes:
@@ -102,7 +103,6 @@ const Pizza = ({ pizzaId = 'p001', onAddToCart }) => {
 
                 <hr className="border-secondary opacity-50 my-3" />
 
-                {/* Requerimiento: Precio de la pizza y botón de añadir */}
                 <div className="d-flex justify-content-between align-items-center mt-auto pt-2">
                   <div>
                     <span className="text-secondary small d-block">Precio:</span>

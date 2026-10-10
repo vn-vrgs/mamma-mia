@@ -3,22 +3,20 @@ import Button from 'react-bootstrap/Button';
 import NavbarBootstrap from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
+import { Link, useLocation } from 'react-router-dom';
 import { formatCurrency } from '../utils/format';
 
-const Navbar = ({ onNavigate, currentPage, total = 25000 }) => {
-  // Requerimiento Hito 1 & 2: Definición de variables al interior del componente
-  const token = false;
+const Navbar = ({ total = 0, token = false }) => {
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   return (
     <NavbarBootstrap bg="dark" variant="dark" expand="lg" className="py-2 border-bottom border-secondary shadow-lg sticky-top">
       <Container fluid className="px-3 px-md-5">
         <NavbarBootstrap.Brand 
-          href="#home" 
-          className="text-warning fw-bold fs-4 me-4 d-flex align-items-center gap-2"
-          onClick={(e) => {
-            e.preventDefault();
-            if (onNavigate) onNavigate('home');
-          }}
+          as={Link} 
+          to="/" 
+          className="text-warning fw-bold fs-4 me-4 d-flex align-items-center gap-2 text-decoration-none"
         >
           <span>🍕</span> Pizzería Mamma Mia!
         </NavbarBootstrap.Brand>
@@ -26,50 +24,54 @@ const Navbar = ({ onNavigate, currentPage, total = 25000 }) => {
         <NavbarBootstrap.Toggle aria-controls="basic-navbar-nav" className="border-secondary" />
 
         <NavbarBootstrap.Collapse id="basic-navbar-nav">
-          {/* Navegación izquierda: Home y botones según estado de autenticación (token) */}
+          {/* Navegación izquierda: Home y botones según token */}
           <Nav className="me-auto gap-2 my-2 my-lg-0 align-items-lg-center">
             <Button 
-              variant={currentPage === 'home' ? 'warning' : 'outline-light'} 
+              as={Link} 
+              to="/" 
+              variant={currentPath === '/' ? 'warning' : 'outline-light'} 
               size="sm" 
-              className={`px-3 rounded-3 fw-medium ${currentPage === 'home' ? 'text-dark fw-bold' : ''}`}
-              onClick={() => onNavigate && onNavigate('home')}
+              className={`px-3 rounded-3 fw-medium text-decoration-none ${currentPath === '/' ? 'text-dark fw-bold' : ''}`}
             >
               🍕 Home
             </Button>
 
-            <Button 
-              variant={currentPage === 'pizza' ? 'warning' : 'outline-light'} 
-              size="sm" 
-              className={`px-3 rounded-3 fw-medium ${currentPage === 'pizza' ? 'text-dark fw-bold' : ''}`}
-              onClick={() => onNavigate && onNavigate('pizza')}
-            >
-              🍕 Pizza Detail
-            </Button>
-
             {token ? (
               <>
-                <Button variant="outline-light" size="sm" className="px-3 rounded-3">
+                <Button 
+                  as={Link} 
+                  to="/profile" 
+                  variant={currentPath === '/profile' ? 'warning' : 'outline-light'} 
+                  size="sm" 
+                  className={`px-3 rounded-3 fw-medium text-decoration-none ${currentPath === '/profile' ? 'text-dark fw-bold' : ''}`}
+                >
                   🔓 Profile
                 </Button>
-                <Button variant="outline-light" size="sm" className="px-3 rounded-3">
+                <Button 
+                  variant="outline-light" 
+                  size="sm" 
+                  className="px-3 rounded-3 text-decoration-none"
+                >
                   🔒 Logout
                 </Button>
               </>
             ) : (
               <>
                 <Button 
-                  variant={currentPage === 'login' ? 'warning' : 'outline-light'} 
+                  as={Link} 
+                  to="/login" 
+                  variant={currentPath === '/login' ? 'warning' : 'outline-light'} 
                   size="sm" 
-                  className={`px-3 rounded-3 fw-medium ${currentPage === 'login' ? 'text-dark fw-bold' : ''}`}
-                  onClick={() => onNavigate && onNavigate('login')}
+                  className={`px-3 rounded-3 fw-medium text-decoration-none ${currentPath === '/login' ? 'text-dark fw-bold' : ''}`}
                 >
                   🔐 Login
                 </Button>
                 <Button 
-                  variant={currentPage === 'register' ? 'warning' : 'outline-light'} 
+                  as={Link} 
+                  to="/register" 
+                  variant={currentPath === '/register' ? 'warning' : 'outline-light'} 
                   size="sm" 
-                  className={`px-3 rounded-3 fw-medium ${currentPage === 'register' ? 'text-dark fw-bold' : ''}`}
-                  onClick={() => onNavigate && onNavigate('register')}
+                  className={`px-3 rounded-3 fw-medium text-decoration-none ${currentPath === '/register' ? 'text-dark fw-bold' : ''}`}
                 >
                   🔐 Register
                 </Button>
@@ -77,13 +79,14 @@ const Navbar = ({ onNavigate, currentPage, total = 25000 }) => {
             )}
           </Nav>
 
-          {/* Botón Total del Carrito */}
+          {/* Botón Total del Carrito -> Redirige a /cart */}
           <Nav className="ms-auto align-items-center mt-2 mt-lg-0">
             <Button 
-              variant={currentPage === 'cart' ? 'info' : 'outline-info'} 
+              as={Link} 
+              to="/cart" 
+              variant={currentPath === '/cart' ? 'info' : 'outline-info'} 
               size="sm" 
-              className={`btn-total px-3 py-1.5 rounded-3 fw-bold ${currentPage === 'cart' ? 'bg-info text-dark' : ''}`}
-              onClick={() => onNavigate && onNavigate('cart')}
+              className={`btn-total px-3 py-1.5 rounded-3 fw-bold text-decoration-none ${currentPath === '/cart' ? 'bg-info text-dark border-info' : ''}`}
             >
               🛒 Total: {formatCurrency(total)}
             </Button>

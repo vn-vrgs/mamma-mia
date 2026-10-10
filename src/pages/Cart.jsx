@@ -8,12 +8,10 @@ import { pizzaCart } from '../pizzas';
 import { formatCurrency } from '../utils/format';
 
 const Cart = ({ cart: propCart, onIncrease, onDecrease, onUpdateTotal }) => {
-  // Requerimiento 3 (Hito 3): Manejo de estado del carrito usando useState
   const [internalCart, setInternalCart] = useState(pizzaCart);
 
   const cart = propCart !== undefined ? propCart : internalCart;
 
-  // Función para incrementar la cantidad de una pizza
   const increaseQuantity = (id) => {
     if (onIncrease) {
       onIncrease(id);
@@ -26,7 +24,6 @@ const Cart = ({ cart: propCart, onIncrease, onDecrease, onUpdateTotal }) => {
     }
   };
 
-  // Función para decrementar la cantidad y eliminar si la cantidad es 0
   const decreaseQuantity = (id) => {
     if (onDecrease) {
       onDecrease(id);
@@ -39,7 +36,6 @@ const Cart = ({ cart: propCart, onIncrease, onDecrease, onUpdateTotal }) => {
     }
   };
 
-  // Función para calcular el total del carrito
   const calculateTotal = (items) => {
     return items.reduce((acc, item) => acc + item.price * item.count, 0);
   };
