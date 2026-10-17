@@ -2,9 +2,20 @@ import React from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/format';
-
+  
 const CardPizza = ({ id = 'p001', name, price, ingredients = [], img, desc, onAddToCart }) => {
+  const { addToCart } = useCart();
+
+  const handleAdd = () => {
+    if (onAddToCart) {
+      onAddToCart();
+    } else {
+      addToCart({ id, name, price, ingredients, img, desc });
+    }
+  };
+
   return (
     <Card className="card-pizza h-100 shadow-lg border-secondary bg-dark text-white rounded-4 overflow-hidden">
       {/* Imagen superior de la pizza */}
@@ -57,7 +68,7 @@ const CardPizza = ({ id = 'p001', name, price, ingredients = [], img, desc, onAd
         <div className="d-flex justify-content-between align-items-center pt-2 mt-auto gap-2">
           <Button 
             as={Link} 
-            to="/pizza/p001" 
+            to={`/pizza/${id}`} 
             variant="outline-light" 
             size="sm" 
             className="px-3 border-secondary rounded-3 flex-fill text-decoration-none text-center"
@@ -68,7 +79,7 @@ const CardPizza = ({ id = 'p001', name, price, ingredients = [], img, desc, onAd
             variant="warning" 
             size="sm" 
             className="px-3 fw-bold text-dark rounded-3 flex-fill"
-            onClick={onAddToCart}
+            onClick={handleAdd}
           >
             Añadir 🛒
           </Button>

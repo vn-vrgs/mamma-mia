@@ -1,48 +1,59 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
 import Badge from 'react-bootstrap/Badge';
+import { useCart } from '../context/CartContext';
+import { usePizzas } from '../context/PizzaContext';
 import { formatCurrency } from '../utils/format';
-import { pizzas as mockPizzas } from '../pizzas';
+  
+const Pizza = ({ pizzaId: propPizzaId }) => {
+  const { id: paramId } = useParams();
+  const pizzaId = propPizzaId || paramId || 'p001';
 
-const Pizza = ({ pizzaId = 'p001', onAddToCart }) => {
+  const { addToCart } = useCart();
+  const { getPizzaById } = usePizzas();
+
   const [pizza, setPizza] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const getPizza = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch(`http://localhost:5000/api/pizzas/${pizzaId}`);
-      if (!response.ok) {
-        throw new Error(`Error al obtener la pizza: HTTP ${response.status}`);
-      }
-      const data = await response.json();
-      setPizza(data);
-    } catch (err) {
-      console.warn('Backend no disponible, usando pizza de respaldo local:', err.message);
-      // Fallback a pizza mock local
-      const found = mockPizzas.find((p) => p.id === pizzaId) || mockPizzas[0];
-      if (found) {
-        setPizza(found);
-      } else {
-        setError('No se pudo cargar la información de la pizza.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    getPizza();
-  }, [pizzaId]);
+    let isMounted = true;
+    const fetchCurrentPizza = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getPizzaById(pizzaId);
+        if (isMounted) {
+          if (data) {
+            setPizza(data);
+          } else {
+            setError('No se pudo encontrar la pizza solicitada.');
+          }
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError('Error al cargar la información de la pizza.');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchCurrentPizza();
+    return () => {
+      isMounted = false;
+    };
+  }, [pizzaId, getPizzaById]);
 
   return (
-    <Container className="my-5 flex-grow-1 d-flex justify-content-center align-items-center">
+    <Container className="my-5 flex-grow-1 d-flex flex-column justify-content-center align-items-center">
       {loading && (
         <div className="text-center py-5">
           <Spinner animation="border" variant="warning" style={{ width: '3rem', height: '3rem' }}>
@@ -56,6 +67,9 @@ const Pizza = ({ pizzaId = 'p001', onAddToCart }) => {
         <Alert variant="danger" className="text-center shadow-lg border-danger w-100" style={{ maxWidth: '600px' }}>
           <Alert.Heading className="fw-bold">❌ Error al cargar la pizza</Alert.Heading>
           <p>{error}</p>
+          <Button as={Link} to="/" variant="outline-light" size="sm" className="mt-2">
+            Volver al Inicio
+          </Button>
         </Alert>
       )}
 
@@ -103,19 +117,30 @@ const Pizza = ({ pizzaId = 'p001', onAddToCart }) => {
 
                 <hr className="border-secondary opacity-50 my-3" />
 
-                <div className="d-flex justify-content-between align-items-center mt-auto pt-2">
+                <div className="d-flex justify-content-between align-items-center mt-auto pt-2 gap-3 flex-wrap">
                   <div>
                     <span className="text-secondary small d-block">Precio:</span>
                     <span className="fs-3 fw-bold text-success">{formatCurrency(pizza.price)}</span>
                   </div>
-                  <Button
-                    variant="warning"
-                    size="lg"
-                    className="fw-bold text-dark rounded-3 px-4 shadow"
-                    onClick={() => onAddToCart && onAddToCart(pizza)}
-                  >
-                    Añadir 🛒
-                  </Button>
+                  <div className="d-flex gap-2">
+                    <Button
+                      as={Link}
+                      to="/"
+                      variant="outline-light"
+                      size="md"
+                      className="border-secondary rounded-3 px-3 text-decoration-none"
+                    >
+                      ← Volver
+                    </Button>
+                    <Button
+                      variant="warning"
+                      size="md"
+                      className="fw-bold text-dark rounded-3 px-4 shadow"
+                      onClick={() => addToCart(pizza)}
+                    >
+                      Añadir 🛒
+                    </Button>
+                  </div>
                 </div>
               </Card.Body>
             </div>

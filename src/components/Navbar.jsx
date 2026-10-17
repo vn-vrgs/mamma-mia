@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import NavbarBootstrap from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import { Link, useLocation } from 'react-router-dom';
+import { CartContext, useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/format';
-
-const Navbar = ({ total = 0, token = false }) => {
+  
+const Navbar = ({ token = false }) => {
+  const { total } = useCart();
   const location = useLocation();
   const currentPath = location.pathname;
 
