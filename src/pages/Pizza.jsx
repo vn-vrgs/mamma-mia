@@ -7,37 +7,48 @@ import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
 import Badge from 'react-bootstrap/Badge';
 import { useCart } from '../context/CartContext';
-import { usePizzas } from '../context/PizzaContext';
+import { pizzas as mockPizzas } from '../pizzas';
 import { formatCurrency } from '../utils/format';
-  
+   
 const Pizza = ({ pizzaId: propPizzaId }) => {
-  const { id: paramId } = useParams();
-  const pizzaId = propPizzaId || paramId || 'p001';
+  // Requerimiento 1: Implementar useParams para obtener el id de la pizza de la URL
+  const { id } = useParams();
+  const pizzaId = id || propPizzaId || 'p001';
 
   const { addToCart } = useCart();
-  const { getPizzaById } = usePizzas();
 
   const [pizza, setPizza] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Requerimiento 1: Con el id obtenido, realiza una petición a la API para obtener la información de la pizza
   useEffect(() => {
     let isMounted = true;
-    const fetchCurrentPizza = async () => {
+
+    const fetchPizza = async () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await getPizzaById(pizzaId);
+
+        const response = await fetch(`http://localhost:5000/api/pizzas/${pizzaId}`);
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        const data = await response.json();
+
         if (isMounted) {
-          if (data) {
-            setPizza(data);
-          } else {
-            setError('No se pudo encontrar la pizza solicitada.');
-          }
+          setPizza(data);
         }
       } catch (err) {
+        console.warn(`Servidor API no disponible para /api/pizzas/${pizzaId}. Usando catálogo local:`, err.message);
+        // Fallback robusto al catálogo local para asegurar que la app funcione siempre
+        const fallbackPizza = mockPizzas.find((p) => p.id === pizzaId);
         if (isMounted) {
-          setError('Error al cargar la información de la pizza.');
+          if (fallbackPizza) {
+            setPizza(fallbackPizza);
+          } else {
+            setError(`No se encontró ninguna pizza con el identificador "${pizzaId}".`);
+          }
         }
       } finally {
         if (isMounted) {
@@ -46,11 +57,12 @@ const Pizza = ({ pizzaId: propPizzaId }) => {
       }
     };
 
-    fetchCurrentPizza();
+    fetchPizza();
+
     return () => {
       isMounted = false;
     };
-  }, [pizzaId, getPizzaById]);
+  }, [pizzaId]);
 
   return (
     <Container className="my-5 flex-grow-1 d-flex flex-column justify-content-center align-items-center">

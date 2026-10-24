@@ -4,9 +4,11 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 import NotificationModal from '../components/NotificationModal';
-
+ 
 const Register = () => {
+  const { login } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,6 +22,9 @@ const Register = () => {
   });
 
   const closeModal = () => {
+    if (modalConfig.type === 'success') {
+      login();
+    }
     setModalConfig((prev) => ({ ...prev, show: false }));
   };
 

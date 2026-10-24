@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-  
+   
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
@@ -12,42 +12,37 @@ import Pizza from './pages/Pizza';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 
+import { useUser } from './context/UserContext';
 import './App.css';
 
 function App() {
-  const [token, setToken] = useState(false);
+  // Requerimiento 5: Consumir token desde UserContext para proteger rutas
+  const { token } = useUser();
 
   return (
     <div className="d-flex flex-column min-vh-100 bg-slate-900 text-white dark-theme">
-      {/* Navbar consume directamente CartContext para el total del pedido */}
-      <Navbar token={token} />
+      {/* Navbar consume directamente CartContext y UserContext */}
+      <Navbar />
 
       <Routes>
-        {/* Ruta Home: consume CartContext y PizzaContext */}
+        {/* Ruta Home: pública, siempre accesible */}
         <Route path="/" element={<Home />} />
 
-        {/* Ruta Register */}
-        <Route path="/register" element={<Register />} />
+        {/* Requerimiento 5: Si token es true, redirige a "/" (Home) para login y register */}
+        <Route path="/login" element={token ? <Navigate to="/" /> : <Login />} />
+        <Route path="/register" element={token ? <Navigate to="/" /> : <Register />} />
 
-        {/* Ruta Login */}
-        <Route path="/login" element={<Login />} />
-
-        {/* Ruta Cart: consume CartContext */}
+        {/* Ruta Cart: accesible, con pago condicionado a token */}
         <Route path="/cart" element={<Cart />} />
 
-        {/* Rutas de detalle de Pizza (específica p001 y dinámica :id) */}
-        <Route path="/pizza/p001" element={<Pizza pizzaId="p001" />} />
+        {/* Requerimiento 1: Ruta dinámica de detalle de pizza con parámetro :id */}
         <Route path="/pizza/:id" element={<Pizza />} />
+        <Route path="/pizza" element={<Navigate to="/pizza/p001" />} />
 
-        {/* Ruta Profile */}
+        {/* Requerimiento 5: Ruta protegida para "/profile". Si token es false, redirige a "/login" */}
         <Route 
           path="/profile" 
-          element={
-            <Profile 
-              email="usuario@mammamia.com" 
-              onLogout={() => setToken(false)} 
-            />
-          } 
+          element={token ? <Profile email="usuario@mammamia.com" /> : <Navigate to="/login" />} 
         />
 
         {/* Ruta 404 explícita */}

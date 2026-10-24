@@ -1,16 +1,19 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Image from 'react-bootstrap/Image';
 import { Link } from 'react-router-dom';
-import { CartContext, useCart } from '../context/CartContext';
+import { useCart } from '../context/CartContext';
+import { useUser } from '../context/UserContext';
 import { formatCurrency } from '../utils/format';
-  
+   
 const Cart = () => {
-  // Consumir el contexto del carrito de compras (Requerimientos 4 y 5)
+  // Consumir el contexto del carrito de compras
   const { cart, increaseQuantity, decreaseQuantity, removeFromCart, total } = useCart();
+  // Requerimiento 4: Consumir token desde UserContext
+  const { token } = useUser();
 
   return (
     <Container className="my-5 flex-grow-1 max-w-2xl" style={{ maxWidth: '800px' }}>
@@ -110,7 +113,7 @@ const Cart = () => {
             </ListGroup>
           )}
 
-          {/* Resumen de Total y Botón de Pago */}
+          {/* Resumen de Total y Botón de Pago (Requerimiento 4: Deshabilitado si token es false) */}
           <div className="pt-4 mt-2 border-top border-secondary d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
             <div>
               <span className="text-secondary small text-uppercase tracking-wider d-block">
@@ -118,14 +121,21 @@ const Cart = () => {
               </span>
               <h2 className="fw-bold text-white mb-0">{formatCurrency(total)}</h2>
             </div>
-            <Button
-              variant="warning"
-              size="lg"
-              className="fw-bold px-5 py-2 text-dark shadow-sm rounded-3"
-              disabled={cart.length === 0}
-            >
-              Pagar 💳
-            </Button>
+            <div className="d-flex flex-column align-items-sm-end">
+              <Button
+                variant="warning"
+                size="lg"
+                className="fw-bold px-5 py-2 text-dark shadow-sm rounded-3"
+                disabled={!token || cart.length === 0}
+              >
+                Pagar 💳
+              </Button>
+              {!token && cart.length > 0 && (
+                <small className="text-warning text-center text-sm-end mt-2 d-block">
+                  ⚠️ Inicia sesión para proceder al pago
+                </small>
+              )}
+            </div>
           </div>
         </Card.Body>
       </Card>

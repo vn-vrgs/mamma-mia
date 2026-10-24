@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/format';
-  
+    
 const CardPizza = ({ id = 'p001', name, price, ingredients = [], img, desc, onAddToCart }) => {
   const { addToCart } = useCart();
 

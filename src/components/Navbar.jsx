@@ -1,16 +1,23 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Button from 'react-bootstrap/Button';
 import NavbarBootstrap from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
-import { Link, useLocation } from 'react-router-dom';
-import { CartContext, useCart } from '../context/CartContext';
+import { NavLink, Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { useUser } from '../context/UserContext';
 import { formatCurrency } from '../utils/format';
-  
-const Navbar = ({ token = false }) => {
+   
+const Navbar = () => {
   const { total } = useCart();
-  const location = useLocation();
-  const currentPath = location.pathname;
+  // Requerimiento 2 y 3: Consumir token y logout desde UserContext
+  const { token, logout } = useUser();
+
+  // Función para estilizar la ruta activa utilizando NavLink (React Router II)
+  const setActiveClass = ({ isActive }) =>
+    isActive
+      ? 'btn btn-warning text-dark fw-bold px-3 rounded-3 text-decoration-none'
+      : 'btn btn-outline-light px-3 rounded-3 fw-medium text-decoration-none';
 
   return (
     <NavbarBootstrap bg="dark" variant="dark" expand="lg" className="py-2 border-bottom border-secondary shadow-lg sticky-top">
@@ -26,72 +33,52 @@ const Navbar = ({ token = false }) => {
         <NavbarBootstrap.Toggle aria-controls="basic-navbar-nav" className="border-secondary" />
 
         <NavbarBootstrap.Collapse id="basic-navbar-nav">
-          {/* Navegación izquierda: Home y botones según token */}
+          {/* Navegación izquierda: Home y botones según token de UserContext */}
           <Nav className="me-auto gap-2 my-2 my-lg-0 align-items-lg-center">
-            <Button 
-              as={Link} 
-              to="/" 
-              variant={currentPath === '/' ? 'warning' : 'outline-light'} 
-              size="sm" 
-              className={`px-3 rounded-3 fw-medium text-decoration-none ${currentPath === '/' ? 'text-dark fw-bold' : ''}`}
-            >
+            {/* Home siempre visible */}
+            <NavLink to="/" className={setActiveClass}>
               🍕 Home
-            </Button>
+            </NavLink>
 
+            {/* Requerimiento 3: Si token es true -> Profile y Logout. Si false -> Login y Register */}
             {token ? (
               <>
-                <Button 
-                  as={Link} 
-                  to="/profile" 
-                  variant={currentPath === '/profile' ? 'warning' : 'outline-light'} 
-                  size="sm" 
-                  className={`px-3 rounded-3 fw-medium text-decoration-none ${currentPath === '/profile' ? 'text-dark fw-bold' : ''}`}
-                >
+                <NavLink to="/profile" className={setActiveClass}>
                   🔓 Profile
-                </Button>
+                </NavLink>
                 <Button 
                   variant="outline-light" 
                   size="sm" 
                   className="px-3 rounded-3 text-decoration-none"
+                  onClick={logout}
                 >
                   🔒 Logout
                 </Button>
               </>
             ) : (
               <>
-                <Button 
-                  as={Link} 
-                  to="/login" 
-                  variant={currentPath === '/login' ? 'warning' : 'outline-light'} 
-                  size="sm" 
-                  className={`px-3 rounded-3 fw-medium text-decoration-none ${currentPath === '/login' ? 'text-dark fw-bold' : ''}`}
-                >
+                <NavLink to="/login" className={setActiveClass}>
                   🔐 Login
-                </Button>
-                <Button 
-                  as={Link} 
-                  to="/register" 
-                  variant={currentPath === '/register' ? 'warning' : 'outline-light'} 
-                  size="sm" 
-                  className={`px-3 rounded-3 fw-medium text-decoration-none ${currentPath === '/register' ? 'text-dark fw-bold' : ''}`}
-                >
+                </NavLink>
+                <NavLink to="/register" className={setActiveClass}>
                   🔐 Register
-                </Button>
+                </NavLink>
               </>
             )}
           </Nav>
 
-          {/* Botón Total del Carrito -> Redirige a /cart */}
+          {/* Botón Total del Carrito -> Siempre visible, redirige a /cart */}
           <Nav className="ms-auto align-items-center mt-2 mt-lg-0">
-            <Button 
-              as={Link} 
+            <NavLink 
               to="/cart" 
-              variant={currentPath === '/cart' ? 'info' : 'outline-info'} 
-              size="sm" 
-              className={`btn-total px-3 py-1.5 rounded-3 fw-bold text-decoration-none ${currentPath === '/cart' ? 'bg-info text-dark border-info' : ''}`}
+              className={({ isActive }) =>
+                `btn-total btn px-3 py-1.5 rounded-3 fw-bold text-decoration-none ${
+                  isActive ? 'btn-info text-dark border-info' : 'btn-outline-info'
+                }`
+              }
             >
               🛒 Total: {formatCurrency(total)}
-            </Button>
+            </NavLink>
           </Nav>
         </NavbarBootstrap.Collapse>
       </Container>

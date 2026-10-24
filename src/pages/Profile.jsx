@@ -3,8 +3,11 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
-
+import { useUser } from '../context/UserContext';
+ 
 const Profile = ({ email = 'usuario@mammamia.com', onLogout }) => {
+  const { logout } = useUser();
+  const handleLogout = onLogout || logout;
   return (
     <Container className="my-5 flex-grow-1 d-flex justify-content-center align-items-center">
       <Card className="p-4 shadow-lg border-secondary bg-dark text-white rounded-4 w-100" style={{ maxWidth: '480px' }}>
@@ -30,7 +33,7 @@ const Profile = ({ email = 'usuario@mammamia.com', onLogout }) => {
             variant="outline-danger"
             size="lg"
             className="w-100 py-2 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2"
-            onClick={onLogout}
+            onClick={handleLogout}
           >
             🔒 Cerrar sesión
           </Button>
