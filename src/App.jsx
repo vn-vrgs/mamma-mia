@@ -16,7 +16,7 @@ import { useUser } from './context/UserContext';
 import './App.css';
 
 function App() {
-  // Requerimiento 5: Consumir token desde UserContext para proteger rutas
+  // Consumo de token real (JWT) desde UserContext para protección de rutas
   const { token } = useUser();
 
   return (
@@ -28,21 +28,21 @@ function App() {
         {/* Ruta Home: pública, siempre accesible */}
         <Route path="/" element={<Home />} />
 
-        {/* Requerimiento 5: Si token es true, redirige a "/" (Home) para login y register */}
+        {/* Si token existe, redirige a "/" (Home) para login y register */}
         <Route path="/login" element={token ? <Navigate to="/" /> : <Login />} />
         <Route path="/register" element={token ? <Navigate to="/" /> : <Register />} />
 
         {/* Ruta Cart: accesible, con pago condicionado a token */}
         <Route path="/cart" element={<Cart />} />
 
-        {/* Requerimiento 1: Ruta dinámica de detalle de pizza con parámetro :id */}
+        {/* Ruta dinámica de detalle de pizza con parámetro :id */}
         <Route path="/pizza/:id" element={<Pizza />} />
         <Route path="/pizza" element={<Navigate to="/pizza/p001" />} />
 
-        {/* Requerimiento 5: Ruta protegida para "/profile". Si token es false, redirige a "/login" */}
+        {/* Requerimiento 5 (Hito 8): Ruta protegida para "/profile". Consume usuario real de UserContext */}
         <Route 
           path="/profile" 
-          element={token ? <Profile email="usuario@mammamia.com" /> : <Navigate to="/login" />} 
+          element={token ? <Profile /> : <Navigate to="/login" />} 
         />
 
         {/* Ruta 404 explícita */}

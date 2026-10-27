@@ -3,40 +3,53 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { Link } from 'react-router-dom';
+import Spinner from 'react-bootstrap/Spinner';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import NotificationModal from '../components/NotificationModal';
- 
+import useInput from '../hooks/useInput';
+
 const Register = () => {
-  const { login } = useUser();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // Requerimiento 4: Implementar el método register de UserContext para acceder al sistema
+  const { register } = useUser();
+  const navigate = useNavigate();
+
+  // Custom Hooks para gestión de inputs de formulario (Material de clase y guía)
+  const emailInput = useInput('');
+  const passwordInput = useInput('');
+  const confirmPasswordInput = useInput('');
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Estado para controlar la ventana emergente (modal)
   const [modalConfig, setModalConfig] = useState({
     show: false,
     type: 'error',
     title: '',
-    message: ''
+    message: '',
   });
 
   const closeModal = () => {
-    if (modalConfig.type === 'success') {
-      login();
-    }
+    const wasSuccess = modalConfig.type === 'success';
     setModalConfig((prev) => ({ ...prev, show: false }));
+    if (wasSuccess) {
+      navigate('/');
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    const confirmPassword = confirmPasswordInput.value.trim();
+
+    if (!email || !password || !confirmPassword) {
       setModalConfig({
         show: true,
         type: 'error',
         title: 'Error de Validación',
-        message: 'Todos los campos son obligatorios (no pueden estar vacíos).'
+        message: 'Todos los campos son obligatorios (no pueden estar vacíos).',
       });
       return;
     }
@@ -46,7 +59,7 @@ const Register = () => {
         show: true,
         type: 'error',
         title: 'Contraseña Débil',
-        message: 'El password debe tener al menos 6 caracteres.'
+        message: 'La contraseña debe tener al menos 6 caracteres.',
       });
       return;
     }
@@ -56,72 +69,122 @@ const Register = () => {
         show: true,
         type: 'error',
         title: 'Contraseñas No Coinciden',
-        message: 'El password y la confirmación del password deben ser iguales.'
+        message: 'La contraseña y su confirmación deben ser exactamente iguales.',
       });
       return;
     }
 
-    setModalConfig({
-      show: true,
-      type: 'success',
-      title: '¡Registro Exitoso!',
-      message: 'Tu cuenta ha sido registrada correctamente. ¡Bienvenido a Pizzería Mamma Mia!'
-    });
+    try {
+      setIsSubmitting(true);
+      // Requerimiento 1 & 4: Consumo asíncrono del método register con JWT
+      await register(email, password);
 
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
+      setModalConfig({
+        show: true,
+        type: 'success',
+        title: '¡Registro Exitoso!',
+        message: `Tu cuenta ha sido creada exitosamente (${email}). ¡Bienvenido a Pizzería Mamma Mia!`,
+      });
+
+      emailInput.reset();
+      passwordInput.reset();
+      confirmPasswordInput.reset();
+    } catch (error) {
+      setModalConfig({
+        show: true,
+        type: 'error',
+        title: 'Error en el Registro',
+        message: error.message || 'No se pudo completar el registro. Intenta nuevamente.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <Container className="my-5 flex-grow-1 d-flex justify-content-center align-items-center">
-      <Card className="p-4 shadow-sm border-0 w-100 bg-dark text-white border-secondary rounded-4" style={{ maxWidth: '480px' }}>
+    <Container className="my-5 flex-grow-1 d-flex justify-content-center align-items-center px-3">
+      <Card
+        className="p-3 p-md-4 shadow-lg border-0 w-100 bg-dark text-white border-secondary rounded-4"
+        style={{ maxWidth: '480px' }}
+      >
         <Card.Body>
-          <h2 className="text-start mb-4 fw-normal text-warning">Register</h2>
+          <div className="text-center mb-4">
+            <span className="fs-1 d-inline-block p-2 rounded-circle bg-warning bg-opacity-10 border border-warning mb-2">
+              📝
+            </span>
+            <h2 className="fw-bold text-warning mb-1">Crear Cuenta</h2>
+            <p className="text-secondary small mb-0">
+              Únete a Pizzería Mamma Mia y disfruta de nuestras especialidades
+            </p>
+          </div>
 
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} noValidate>
             <Form.Group className="mb-3" controlId="registerEmail">
-              <Form.Label className="text-secondary small">Email</Form.Label>
+              <Form.Label className="text-secondary small fw-semibold">Correo Electrónico</Form.Label>
               <Form.Control
                 type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-secondary bg-opacity-25 text-white border-secondary"
+                placeholder="ejemplo@correo.com"
+                value={emailInput.value}
+                onChange={emailInput.onChange}
+                className="bg-secondary bg-opacity-25 text-white border-secondary py-2"
+                disabled={isSubmitting}
+                autoComplete="email"
+                required
               />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="registerPassword">
-              <Form.Label className="text-secondary small">Password</Form.Label>
+              <Form.Label className="text-secondary small fw-semibold">Contraseña</Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-secondary bg-opacity-25 text-white border-secondary"
+                placeholder="Mínimo 6 caracteres"
+                value={passwordInput.value}
+                onChange={passwordInput.onChange}
+                className="bg-secondary bg-opacity-25 text-white border-secondary py-2"
+                disabled={isSubmitting}
+                autoComplete="new-password"
+                required
               />
             </Form.Group>
 
             <Form.Group className="mb-4" controlId="registerConfirmPassword">
-              <Form.Label className="text-secondary small">Confirm Password</Form.Label>
+              <Form.Label className="text-secondary small fw-semibold">Confirmar Contraseña</Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="bg-secondary bg-opacity-25 text-white border-secondary"
+                placeholder="Repite tu contraseña"
+                value={confirmPasswordInput.value}
+                onChange={confirmPasswordInput.onChange}
+                className="bg-secondary bg-opacity-25 text-white border-secondary py-2"
+                disabled={isSubmitting}
+                autoComplete="new-password"
+                required
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100 py-2 fw-bold mb-3">
-              Register 🔐
+            <Button
+              variant="warning"
+              type="submit"
+              className="w-100 py-2 fw-bold mb-3 text-dark rounded-3 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Spinner animation="border" size="sm" />
+                  <span>Creando cuenta...</span>
+                </>
+              ) : (
+                <>
+                  <span>Registrarme</span>
+                  <span>🔐</span>
+                </>
+              )}
             </Button>
           </Form>
 
-          <div className="text-center mt-3 pt-2 border-top border-secondary">
-            <span className="text-secondary small me-2">¿Ya tienes una cuenta?</span>
+          <div className="text-center mt-3 pt-3 border-top border-secondary">
+            <span className="text-secondary small me-2">¿Ya tienes una cuenta registrada?</span>
             <Link to="/login" className="text-warning text-decoration-none fw-semibold small">
-              Inicia Sesión
+              Inicia sesión aquí
             </Link>
           </div>
         </Card.Body>
