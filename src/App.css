@@ -1,4 +1,4 @@
-/* src/App.css - Dark Theme & Minimalist Component Styles */
+/* src/App.css - Dark Theme & Responsive Component Styles */
 
 /* Header Component */
 .header-bg {
@@ -96,15 +96,57 @@
   box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
 }
 
-/* Responsive Container Adjustments */
+/* Responsive & Mobile First Adjustments */
+@media (max-width: 991.98px) {
+  /* Navbar colapsado en pantallas móviles y tablets */
+  .navbar-collapse {
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 0.5rem;
+  }
+  .navbar-collapse .nav-link,
+  .navbar-collapse .btn {
+    text-align: center;
+    width: 100%;
+  }
+}
+
 @media (max-width: 576px) {
   .header-title {
-    font-size: 2.2rem;
+    font-size: 2.1rem;
   }
   .header-subtitle {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   .header-bg {
     padding: 3.5rem 1rem;
+  }
+
+  /* Ajustes de espaciado en tarjetas para pantallas pequeñas */
+  .card-body {
+    padding: 1.25rem !important;
+  }
+
+  /* Touch targets accesibles (WCAG recomendación 44px) */
+  .btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-sm {
+    min-height: 38px;
+  }
+}
+
+@media (max-width: 400px) {
+  .header-title {
+    font-size: 1.85rem;
+  }
+
+  .btn-total {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
   }
 }
