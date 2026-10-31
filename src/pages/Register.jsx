@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import NotificationModal from '../components/NotificationModal';
 import useInput from '../hooks/useInput';
+import { translateErrorMessage } from '../utils/format';
 
 const Register = () => {
   // Requerimiento 4: Implementar el método register de UserContext para acceder al sistema
@@ -94,7 +95,7 @@ const Register = () => {
         show: true,
         type: 'error',
         title: 'Error en el Registro',
-        message: error.message || 'No se pudo completar el registro. Intenta nuevamente.',
+        message: translateErrorMessage(error, 'No se pudo completar el registro. Intenta nuevamente.'),
       });
     } finally {
       setIsSubmitting(false);

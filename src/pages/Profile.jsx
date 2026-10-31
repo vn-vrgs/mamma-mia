@@ -6,6 +6,7 @@ import Badge from 'react-bootstrap/Badge';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
 import { useUser } from '../context/UserContext';
+import { translateErrorMessage } from '../utils/format';
 
 const Profile = ({ onLogout }) => {
   // Requerimientos 3 y 5: Consumo del método para obtener perfil y logout
@@ -21,7 +22,7 @@ const Profile = ({ onLogout }) => {
         await getProfile();
       } catch (err) {
         if (isMounted) {
-          setProfileError(err.message || 'Error al sincronizar datos de perfil');
+          setProfileError(translateErrorMessage(err, 'Error al sincronizar datos de perfil'));
         }
       }
     };

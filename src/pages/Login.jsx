@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import NotificationModal from '../components/NotificationModal';
 import useInput from '../hooks/useInput';
+import { translateErrorMessage } from '../utils/format';
 
 const Login = () => {
   // Requerimiento 4: Implementar el método login de UserContext para acceder al sistema
@@ -80,7 +81,7 @@ const Login = () => {
         show: true,
         type: 'error',
         title: 'Error de Autenticación',
-        message: error.message || 'No se pudo iniciar sesión. Verifica tus credenciales.',
+        message: translateErrorMessage(error, 'No se pudo iniciar sesión. Verifica tus credenciales.'),
       });
     } finally {
       setIsSubmitting(false);

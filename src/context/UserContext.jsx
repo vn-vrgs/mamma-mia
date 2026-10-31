@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { translateErrorMessage } from '../utils/format';
 
 // 1. Creación del contexto de usuario (Requerimiento 1, 2 y 3 - Hito 8)
 export const UserContext = createContext();
@@ -34,7 +35,7 @@ export const UserProvider = ({ children }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data?.error || 'Error al iniciar sesión');
+        throw new Error(translateErrorMessage(data?.error, 'Error al iniciar sesión'));
       }
 
       // Almacenar token y email en los estados respectivos
@@ -48,8 +49,9 @@ export const UserProvider = ({ children }) => {
 
       return { success: true, data };
     } catch (error) {
-      console.error('Error en UserContext.login:', error.message);
-      throw error;
+      const translatedMsg = translateErrorMessage(error, 'No se pudo iniciar sesión. Verifica tus credenciales.');
+      console.error('Error en UserContext.login:', translatedMsg);
+      throw new Error(translatedMsg);
     } finally {
       setLoading(false);
     }
@@ -76,7 +78,7 @@ export const UserProvider = ({ children }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data?.error || 'Error al registrar usuario');
+        throw new Error(translateErrorMessage(data?.error, 'Error al registrar usuario'));
       }
 
       // Almacenar token y email en los estados respectivos
@@ -90,8 +92,9 @@ export const UserProvider = ({ children }) => {
 
       return { success: true, data };
     } catch (error) {
-      console.error('Error en UserContext.register:', error.message);
-      throw error;
+      const translatedMsg = translateErrorMessage(error, 'No se pudo completar el registro. Intenta nuevamente.');
+      console.error('Error en UserContext.register:', translatedMsg);
+      throw new Error(translatedMsg);
     } finally {
       setLoading(false);
     }
@@ -136,7 +139,7 @@ export const UserProvider = ({ children }) => {
         if (response.status === 401) {
           logout();
         }
-        throw new Error(data?.error || 'Error al consultar el perfil');
+        throw new Error(translateErrorMessage(data?.error, 'Error al consultar el perfil'));
       }
 
       // Actualizar datos del usuario y email en el estado
@@ -148,8 +151,9 @@ export const UserProvider = ({ children }) => {
 
       return data;
     } catch (error) {
-      console.error('Error en UserContext.getProfile:', error.message);
-      throw error;
+      const translatedMsg = translateErrorMessage(error, 'Error al consultar el perfil');
+      console.error('Error en UserContext.getProfile:', translatedMsg);
+      throw new Error(translatedMsg);
     } finally {
       setLoading(false);
     }
@@ -159,7 +163,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       getProfile().catch((err) => {
-        console.warn('Sesión no recuperada:', err.message);
+        console.warn('Sesión no recuperada:', translateErrorMessage(err));
       });
     }
   }, [token]);
