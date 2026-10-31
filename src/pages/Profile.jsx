@@ -9,11 +9,10 @@ import { useUser } from '../context/UserContext';
 import { translateErrorMessage } from '../utils/format';
 
 const Profile = ({ onLogout }) => {
-  // Requerimientos 3 y 5: Consumo del método para obtener perfil y logout
+  // Consumo de métodos y datos desde UserContext
   const { email, user, logout, getProfile, loading } = useUser();
   const [profileError, setProfileError] = useState(null);
 
-  // Requerimiento 3: Invocar /api/auth/me al montar el componente
   useEffect(() => {
     let isMounted = true;
     const fetchUserData = async () => {
@@ -32,13 +31,13 @@ const Profile = ({ onLogout }) => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [getProfile]);
 
   const handleLogout = onLogout || logout;
-  const displayEmail = email || user?.email || 'Cargando usuario...';
+  const displayEmail = email || user?.email || 'Usuario';
 
   return (
-    <Container className="my-5 flex-grow-1 d-flex justify-content-center align-items-center px-3">
+    <Container className="my-4 my-md-5 flex-grow-1 d-flex justify-content-center align-items-center px-3">
       <Card
         className="p-3 p-md-4 shadow-lg border-secondary bg-dark text-white rounded-4 w-100"
         style={{ maxWidth: '520px' }}
@@ -49,18 +48,18 @@ const Profile = ({ onLogout }) => {
               👤
             </span>
             <h3 className="fw-bold text-warning mb-1">Perfil de Usuario</h3>
-            <Badge bg="success" className="text-white fw-semibold px-3 py-1 rounded-pill">
-              Sesión Activa con JWT
+            <Badge bg="success" className="text-white fw-semibold px-3 py-1.5 rounded-pill">
+              Sesión Activa con LocalStorage ✅
             </Badge>
           </div>
 
           {profileError && (
-            <Alert variant="danger" className="text-start py-2 px-3 small rounded-3">
-              ⚠️ {profileError}
+            <Alert variant="info" className="text-start py-2 px-3 small rounded-3 bg-info bg-opacity-10 border-info text-info">
+              ℹ️ {profileError}
             </Alert>
           )}
 
-          {/* Requerimiento 5: Mostrar el email del usuario autenticado */}
+          {/* Mostrar el email del usuario autenticado */}
           <div className="bg-secondary bg-opacity-25 p-3 rounded-3 border border-secondary mb-4 text-start">
             <p className="text-secondary small text-uppercase tracking-wider mb-1 fw-semibold">
               Email del Usuario Autenticado:
@@ -70,7 +69,7 @@ const Profile = ({ onLogout }) => {
               {loading && !email ? (
                 <div className="d-flex align-items-center gap-2 text-warning">
                   <Spinner animation="border" size="sm" />
-                  <span className="small">Obteniendo perfil desde /api/auth/me...</span>
+                  <span className="small">Obteniendo perfil...</span>
                 </div>
               ) : (
                 <span className="fs-5 fw-bold text-white text-break">
@@ -80,16 +79,17 @@ const Profile = ({ onLogout }) => {
             </div>
             {user?.id && (
               <small className="text-secondary d-block mt-2 font-monospace">
-                ID de sesión: {user.id}
+                ID de credencial: {user.id}
               </small>
             )}
           </div>
 
-          {/* Requerimiento 5: Botón para cerrar sesión */}
+          {/* Botón para cerrar sesión */}
           <Button
             variant="outline-danger"
             size="lg"
             className="w-100 py-2.5 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+            style={{ minHeight: '44px' }}
             onClick={handleLogout}
           >
             <span>🔒</span>

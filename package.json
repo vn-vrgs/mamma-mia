@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "server": "node index.js",
     "start": "node index.js",
-    "test": "node test-qa-suite.mjs"
+    "test": "node test-credentials-qa.mjs && node test-qa-suite.mjs",
+    "test:credentials": "node test-credentials-qa.mjs",
+    "test:backend": "node test-qa-suite.mjs"
   },
   "dependencies": {
     "bootstrap": "^5.3.3",

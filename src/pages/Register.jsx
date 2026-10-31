@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
+import Alert from 'react-bootstrap/Alert';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import NotificationModal from '../components/NotificationModal';
@@ -11,16 +12,17 @@ import useInput from '../hooks/useInput';
 import { translateErrorMessage } from '../utils/format';
 
 const Register = () => {
-  // Requerimiento 4: Implementar el método register de UserContext para acceder al sistema
-  const { register } = useUser();
+  // Requerimiento: Implementar el método register de UserContext con persistencia en localStorage
+  const { register, logout } = useUser();
   const navigate = useNavigate();
 
-  // Custom Hooks para gestión de inputs de formulario (Material de clase y guía)
+  // Custom Hooks para gestión de inputs de formulario
   const emailInput = useInput('');
   const passwordInput = useInput('');
   const confirmPasswordInput = useInput('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lastRegisteredEmail, setLastRegisteredEmail] = useState('');
 
   // Estado para controlar la ventana emergente (modal)
   const [modalConfig, setModalConfig] = useState({
@@ -36,6 +38,13 @@ const Register = () => {
     if (wasSuccess) {
       navigate('/');
     }
+  };
+
+  const handleTestLogin = () => {
+    // Cierra modal, cierra sesión activa y redirige a /login para probar las credenciales recién registradas
+    setModalConfig((prev) => ({ ...prev, show: false }));
+    logout();
+    navigate('/login');
   };
 
   const handleSubmit = async (e) => {
@@ -77,14 +86,15 @@ const Register = () => {
 
     try {
       setIsSubmitting(true);
-      // Requerimiento 1 & 4: Consumo asíncrono del método register con JWT
+      // Registro y persistencia de credenciales en localStorage
       await register(email, password);
+      setLastRegisteredEmail(email);
 
       setModalConfig({
         show: true,
         type: 'success',
         title: '¡Registro Exitoso!',
-        message: `Tu cuenta ha sido creada exitosamente (${email}). ¡Bienvenido a Pizzería Mamma Mia!`,
+        message: `Tu cuenta (${email}) ha sido registrada y guardada con éxito en LocalStorage. Ya puedes usar tus credenciales para iniciar sesión o navegar por la pizzería.`,
       });
 
       emailInput.reset();
@@ -103,7 +113,7 @@ const Register = () => {
   };
 
   return (
-    <Container className="my-5 flex-grow-1 d-flex justify-content-center align-items-center px-3">
+    <Container className="my-4 my-md-5 flex-grow-1 d-flex justify-content-center align-items-center px-3">
       <Card
         className="p-3 p-md-4 shadow-lg border-0 w-100 bg-dark text-white border-secondary rounded-4"
         style={{ maxWidth: '480px' }}
@@ -115,13 +125,17 @@ const Register = () => {
             </span>
             <h2 className="fw-bold text-warning mb-1">Crear Cuenta</h2>
             <p className="text-secondary small mb-0">
-              Únete a Pizzería Mamma Mia y disfruta de nuestras especialidades
+              Registra tus credenciales (Usuario y Contraseña) en Pizzería Mamma Mia
             </p>
           </div>
 
+          <Alert variant="info" className="bg-info bg-opacity-10 border-info text-info small py-2 px-3 rounded-3 mb-4">
+            💾 <strong>Almacenamiento Local:</strong> Las credenciales quedarán registradas temporalmente en tu navegador mediante <code>localStorage</code>.
+          </Alert>
+
           <Form onSubmit={handleSubmit} noValidate>
             <Form.Group className="mb-3" controlId="registerEmail">
-              <Form.Label className="text-secondary small fw-semibold">Correo Electrónico</Form.Label>
+              <Form.Label className="text-secondary small fw-semibold">Correo Electrónico (Usuario)</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="ejemplo@correo.com"
@@ -165,13 +179,14 @@ const Register = () => {
             <Button
               variant="warning"
               type="submit"
-              className="w-100 py-2 fw-bold mb-3 text-dark rounded-3 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+              className="w-100 py-2.5 fw-bold mb-3 text-dark rounded-3 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+              style={{ minHeight: '44px' }}
               disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <>
                   <Spinner animation="border" size="sm" />
-                  <span>Creando cuenta...</span>
+                  <span>Creando cuenta en LocalStorage...</span>
                 </>
               ) : (
                 <>
@@ -197,6 +212,10 @@ const Register = () => {
         type={modalConfig.type}
         title={modalConfig.title}
         message={modalConfig.message}
+        primaryLabel={modalConfig.type === 'success' ? 'Ir al Menú Principal 🍕' : 'Aceptar'}
+        onPrimaryClick={closeModal}
+        secondaryLabel={modalConfig.type === 'success' ? 'Probar Botón Login 🔑' : null}
+        onSecondaryClick={modalConfig.type === 'success' ? handleTestLogin : null}
       />
     </Container>
   );
